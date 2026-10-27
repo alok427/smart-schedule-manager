@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — Smart Schedule Manager</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23C99A3B'/%3E%3Ctext x='32' y='45' font-size='36' font-family='Georgia' font-weight='700' text-anchor='middle' fill='%2312203F'%3ES%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+  <div class="login-shell">
+    <aside class="login-brand">
+      <div class="brand">
+        <div class="brand-logo">S</div>
+        <div class="brand-name">Smart Schedule Manager</div>
+      </div>
+      <div>
+        <h2 class="font-display">Conflict-free timetables, generated in minutes.</h2>
+        <p class="lead">One place for faculty, rooms and sections, with automatic scheduling and live workload tracking.</p>
+        <ul>
+          <li>Automatic timetable generation with clash detection</li>
+          <li>Faculty load and weekly capacity at a glance</li>
+          <li>Role-based views for admins, faculty and students</li>
+        </ul>
+      </div>
+      <div class="foot">Academic timetable management</div>
+    </aside>
+
+    <main class="login-form-side">
+      <div class="card login-card">
+        <div class="card-body p-4 p-md-5">
+          <div class="brand-mark">Welcome back</div>
+          <div class="brand-sub">Sign in to continue to your dashboard</div>
+          <div id="error-box"></div>
+          <form id="login-form">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" autocomplete="username" autofocus required>
+            </div>
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submit-btn">Sign in</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/api.js' %}"></script>
+  <script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>

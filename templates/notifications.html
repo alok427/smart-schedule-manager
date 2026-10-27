@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Notifications — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="notifications"{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+{% block page_meta %}Generation, publish, and conflict alerts{% endblock %}
+{% block topbar_actions %}<button class="btn btn-outline-secondary btn-sm" id="mark-all-btn">Mark all read</button>{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <div id="notif-list"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/notifications_page.js' %}"></script>
+{% endblock %}

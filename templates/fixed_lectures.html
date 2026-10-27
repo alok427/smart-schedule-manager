@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Fixed Scheduling — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="fixed-lectures"{% endblock %}
+{% block page_title %}Fixed Scheduling{% endblock %}
+{% block page_meta %}Lock a faculty/slot/room before generation reserves the rest{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Add a fixed lecture</h2>
+      <div id="form-error"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="fl-department" class="form-label">Department</label>
+          <select id="fl-department" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="fl-section" class="form-label">Section</label>
+          <select id="fl-section" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="fl-semester" class="form-label">Semester</label>
+          <select id="fl-semester" class="form-select"></select>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="fl-offering" class="form-label">Subject</label>
+          <select id="fl-offering" class="form-select"></select>
+        </div>
+        <div class="col-md-6">
+          <label for="fl-session-type" class="form-label">Session type</label>
+          <select id="fl-session-type" class="form-select">
+            <option value="LECTURE">Lecture</option>
+            <option value="TUTORIAL">Tutorial</option>
+            <option value="PRACTICAL">Practical / Lab (2-period block)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="fl-faculty" class="form-label">Faculty (optional if only locking a slot/room)</label>
+          <select id="fl-faculty" class="form-select"><option value="">— none —</option></select>
+        </div>
+        <div class="col-md-6">
+          <label for="fl-classroom" class="form-label">Classroom</label>
+          <select id="fl-classroom" class="form-select"><option value="">— none —</option></select>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="fl-day" class="form-label">Day</label>
+          <select id="fl-day" class="form-select">
+            <option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option>
+            <option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="fl-period" class="form-label">Period (for a lab, this is the first of the pair)</label>
+          <select id="fl-period" class="form-select">
+            <option value="P1">P1 (09:45-10:35)</option><option value="P2">P2 (10:35-11:25)</option>
+            <option value="P3">P3 (11:30-12:20)</option><option value="P4">P4 (12:20-13:10)</option>
+            <option value="P5">P5 (13:40-14:30)</option><option value="P6">P6 (14:30-15:20)</option>
+            <option value="P7">P7 (15:20-16:05)</option><option value="P8">P8 (16:05-16:50)</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="fl-notes" class="form-label">Notes</label>
+        <input type="text" class="form-control" id="fl-notes" placeholder="Reason for fixing this lecture (optional)">
+      </div>
+      <button class="btn btn-brass" id="fl-submit">Add fixed lecture</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Existing fixed lectures for this section &amp; semester</h2>
+      <div id="fl-list"><span class="text-muted">Select a section and semester above to see its fixed lectures.</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/fixed_lectures.js' %}"></script>
+{% endblock %}

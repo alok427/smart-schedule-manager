@@ -1,0 +1,36 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+db.sqlite3
+/staticfiles/
+/media/
+.DS_Store
+*.egg-info/
+.venv/
+venv/
+*.log
+
+# Environment and secrets
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Local databases and backups
+*.sqlite3
+*.db
+*.dump
+*.bak
+
+# Python and test caches
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# IDE and OS files
+.idea/
+Thumbs.db

@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+!.env.example
+db.sqlite3
+staticfiles/
+media/
+.git/
+.gitignore
+.venv/
+venv/
+*.log
+.pytest_cache/
+.github/
+README.md

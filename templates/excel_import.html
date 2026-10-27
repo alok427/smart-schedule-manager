@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Excel Import — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="excel-import"{% endblock %}
+{% block page_title %}Excel Import{% endblock %}
+{% block page_meta %}Bulk-load Faculty, Subject, and Classroom data{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-2">1. Download the template</h2>
+      <p class="mb-3">The template has three required sheets — Faculty, Subject, Classroom — with the exact headers the importer expects.</p>
+      <a class="btn btn-outline-secondary" href="/api/data-import/template/" id="template-link">Download Excel Template</a>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">2. Upload a filled-in file</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="import-department" class="form-label">Department</label>
+          <select id="import-department" class="form-select"></select>
+        </div>
+        <div class="col-md-6">
+          <label for="import-year" class="form-label">Year (needed for the Subject sheet)</label>
+          <select id="import-year" class="form-select"></select>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="import-file" class="form-label">Excel file (.xlsx or .xlsm)</label>
+        <input type="file" class="form-control" id="import-file" accept=".xlsx,.xlsm">
+      </div>
+      <button class="btn btn-brass" id="import-btn">Import</button>
+      <div id="import-result" class="mt-3"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Recent imports</h2>
+      <div id="import-history"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/excel_import.js' %}"></script>
+{% endblock %}

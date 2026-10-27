@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Subjects — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="subjects"{% endblock %}
+{% block page_title %}Subjects{% endblock %}
+{% block page_meta %}Lecture / tutorial / practical hours per subject{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Add subject</h2>
+      <div id="form-error"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="s-department" class="form-label">Department</label>
+          <select id="s-department" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="s-year" class="form-label">Year</label>
+          <select id="s-year" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="s-category" class="form-label">Category</label>
+          <select id="s-category" class="form-select">
+            <option value="CORE">Core / Main</option>
+            <option value="EXTRA">Additional / Extra</option>
+          </select>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="s-code" class="form-label">Subject code</label>
+          <input type="text" class="form-control" id="s-code" placeholder="CS301">
+        </div>
+        <div class="col-md-6">
+          <label for="s-name" class="form-label">Subject name</label>
+          <input type="text" class="form-control" id="s-name" placeholder="Database Management Systems">
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-6 col-md-3">
+          <label for="s-lecture" class="form-label">Lecture hrs/week</label>
+          <input type="number" class="form-control" id="s-lecture" value="3" min="0" max="10">
+        </div>
+        <div class="col-6 col-md-3">
+          <label for="s-tutorial" class="form-label">Tutorial hrs/week</label>
+          <input type="number" class="form-control" id="s-tutorial" value="0" min="0" max="10">
+        </div>
+        <div class="col-6 col-md-3">
+          <label for="s-practical" class="form-label">Practical hrs/week (even)</label>
+          <input type="number" class="form-control" id="s-practical" value="0" min="0" max="10" step="2">
+        </div>
+        <div class="col-6 col-md-3">
+          <label for="s-credits" class="form-label">Credits</label>
+          <input type="number" class="form-control" id="s-credits" value="3" min="0" max="10" step="0.5">
+        </div>
+      </div>
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="s-has-batches">
+        <label class="form-check-label" for="s-has-batches">Has lab batches (splits the section into 2 batches for practicals)</label>
+      </div>
+      <button class="btn btn-brass" id="s-submit">Add subject</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="h6 font-display mb-0">All subjects</h2>
+        <div class="btn-group no-print" id="s-bulk-actions" style="display:none;">
+          <button class="btn btn-outline-secondary btn-sm" id="s-bulk-activate">Activate selected</button>
+          <button class="btn btn-outline-secondary btn-sm" id="s-bulk-deactivate">Deactivate selected</button>
+          <button class="btn btn-outline-danger btn-sm" id="s-bulk-delete">Delete selected</button>
+        </div>
+      </div>
+      <div id="s-bulk-result"></div>
+      <div id="s-list"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/subjects.js' %}"></script>
+{% endblock %}

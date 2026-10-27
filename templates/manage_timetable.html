@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Manage Timetable — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="manage-timetable"{% endblock %}
+{% block page_title %}Manage Timetable{% endblock %}
+{% block page_meta %}Generate, view, and publish college timetables{% endblock %}
+
+{% block content %}
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Generation controls</h2>
+      <div id="gen-error"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="gen-academic-year" class="form-label">Academic year</label>
+          <select id="gen-academic-year" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="gen-semester-type" class="form-label">Odd / Even</label>
+          <select id="gen-semester-type" class="form-select">
+            <option value="ODD">Odd</option>
+            <option value="EVEN">Even</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="gen-scope-type" class="form-label">Generation mode</label>
+          <select id="gen-scope-type" class="form-select">
+            <option value="COMPLETE">Generate Complete Timetable</option>
+            <option value="SECTION">Generate Selected Section</option>
+            <option value="DRAFT">Draft / Temporary</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label d-block">Years ON/OFF</label>
+        <div class="d-flex flex-wrap gap-3" id="gen-years">
+          <div class="form-check"><input class="form-check-input" type="checkbox" value="1" checked id="gy1"><label class="form-check-label" for="gy1">Year 1</label></div>
+          <div class="form-check"><input class="form-check-input" type="checkbox" value="2" checked id="gy2"><label class="form-check-label" for="gy2">Year 2</label></div>
+          <div class="form-check"><input class="form-check-input" type="checkbox" value="3" checked id="gy3"><label class="form-check-label" for="gy3">Year 3</label></div>
+          <div class="form-check"><input class="form-check-input" type="checkbox" value="4" checked id="gy4"><label class="form-check-label" for="gy4">Year 4</label></div>
+        </div>
+        <div class="helptext mt-1">Unchecked years are skipped for this run only — their data is never deleted.</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label d-block">Departments</label>
+        <div class="d-flex flex-wrap gap-3" id="gen-departments"><span class="text-muted">Loading…</span></div>
+        <div class="helptext mt-1">Leave all unchecked to include every department you have access to.</div>
+      </div>
+
+      <div class="mb-3" id="gen-sections-wrap" style="display:none;">
+        <label class="form-label d-block">Sections (required for Selected Section mode)</label>
+        <div class="d-flex flex-wrap gap-3" id="gen-sections"><span class="text-muted">Loading…</span></div>
+      </div>
+
+      <button class="btn btn-brass" id="generate-btn">Generate Complete Timetable</button>
+      <div id="gen-result" class="mt-3"></div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">View timetable</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="view-department" class="form-label">Department</label>
+          <select id="view-department" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="view-section" class="form-label">Section</label>
+          <select id="view-section" class="form-select"><option>Select a department first</option></select>
+        </div>
+        <div class="col-md-4">
+          <label for="view-semester" class="form-label">Semester</label>
+          <select id="view-semester" class="form-select"><option>Select a section first</option></select>
+        </div>
+      </div>
+      <button class="btn btn-outline-secondary" id="view-btn">View timetable</button>
+    </div>
+  </div>
+
+  <div class="card mb-3" id="timetable-panel" style="display:none;">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h2 class="h6 font-display mb-0" id="timetable-title">Timetable</h2>
+        <button class="btn btn-outline-secondary btn-sm no-print" id="print-btn">Print</button>
+      </div>
+      <p class="helptext mb-3">Drag any scheduled cell to a new slot to move it, or click it to move it precisely or change its room.</p>
+      <div id="dnd-feedback"></div>
+      <div class="tt-legend mb-2"><span class="l-lec">Lecture</span><span class="l-tut">Tutorial</span><span class="l-prac">Practical / Lab</span></div>
+      <div class="tt-wrap"><div id="timetable-grid"></div></div>
+    </div>
+  </div>
+
+  <div class="card mb-3" id="edit-panel" style="display:none;">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Modify entry</h2>
+      <div id="edit-summary" class="helptext mb-3"></div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="edit-day" class="form-label">Move to day</label>
+            <select id="edit-day" class="form-select">
+              <option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option>
+              <option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-period" class="form-label">Move to period (for a lab, pick the first of the pair)</label>
+            <select id="edit-period" class="form-select">
+              <option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option><option value="P4">P4</option>
+              <option value="P5">P5</option><option value="P6">P6</option><option value="P7">P7</option><option value="P8">P8</option>
+            </select>
+          </div>
+          <button class="btn btn-outline-secondary" id="edit-move-btn">Move</button>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="edit-classroom" class="form-label">Change room to</label>
+            <select id="edit-classroom" class="form-select"></select>
+          </div>
+          <button class="btn btn-outline-secondary" id="edit-room-btn">Change room</button>
+        </div>
+      </div>
+      <div id="edit-result" class="mt-3"></div>
+    </div>
+  </div>
+
+  <div class="card mb-3" id="history-panel" style="display:none;">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">History</h2>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <div class="card" id="faculty-tool-panel" style="display:none;">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-2">Faculty assignment tool</h2>
+      <p class="helptext mb-3">Changes the faculty for every scheduled session of a subject at once (Section 33) — validated immediately, rejected entirely if it would create any clash.</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="fac-tool-offering" class="form-label">Subject offering</label>
+          <select id="fac-tool-offering" class="form-select"></select>
+        </div>
+        <div class="col-md-6">
+          <label for="fac-tool-faculty" class="form-label">New faculty</label>
+          <select id="fac-tool-faculty" class="form-select"></select>
+        </div>
+      </div>
+      <button class="btn btn-outline-secondary" id="fac-tool-btn">Change faculty</button>
+      <div id="fac-tool-result" class="mt-3"></div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/manage_timetable.js' %}"></script>
+{% endblock %}

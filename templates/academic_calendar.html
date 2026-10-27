@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Academic Calendar — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="academic-calendar"{% endblock %}
+{% block page_title %}Academic Calendar{% endblock %}
+{% block page_meta %}Working days and holidays the generator respects{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Calendar</h2>
+      <div class="row g-3 mb-2">
+        <div class="col-md-4">
+          <label for="cal-academic-year" class="form-label">Academic year</label>
+          <select id="cal-academic-year" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="cal-department" class="form-label">Department (blank = college-wide)</label>
+          <select id="cal-department" class="form-select"><option value="">— college-wide —</option></select>
+        </div>
+      </div>
+      <div id="cal-status"></div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Weekly working days</h2>
+      <div class="d-flex flex-wrap gap-3" id="working-days-box"><span class="text-muted">Select a calendar above…</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Add a holiday</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="hol-date" class="form-label">Date</label>
+          <input type="text" class="form-control" id="hol-date" placeholder="YYYY-MM-DD">
+        </div>
+        <div class="col-md-4">
+          <label for="hol-name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="hol-name" placeholder="Independence Day">
+        </div>
+      </div>
+      <button class="btn btn-outline-secondary" id="hol-submit">Add holiday</button>
+      <div id="holiday-list" class="mt-3"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/academic_calendar.js' %}"></script>
+{% endblock %}

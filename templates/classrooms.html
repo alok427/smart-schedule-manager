@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Classrooms — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="classrooms"{% endblock %}
+{% block page_title %}Classrooms{% endblock %}
+{% block page_meta %}Rooms and labs available for scheduling{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Add classroom</h2>
+      <div id="form-error"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="c-department" class="form-label">Department (leave unset for a shared room)</label>
+          <select id="c-department" class="form-select"><option value="">— shared —</option></select>
+        </div>
+        <div class="col-md-4">
+          <label for="c-room-number" class="form-label">Room number</label>
+          <input type="text" class="form-control" id="c-room-number" placeholder="CR-201 or LAB-01">
+        </div>
+        <div class="col-md-4">
+          <label for="c-building" class="form-label">Building</label>
+          <input type="text" class="form-control" id="c-building" placeholder="Main Block">
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="c-type" class="form-label">Room type</label>
+          <select id="c-type" class="form-select">
+            <option value="CLASSROOM">Normal classroom</option>
+            <option value="LAB">Lab</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="c-capacity" class="form-label">Capacity</label>
+          <input type="number" class="form-control" id="c-capacity" value="60" min="1" max="300">
+        </div>
+      </div>
+      <button class="btn btn-brass" id="c-submit">Add classroom</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="h6 font-display mb-0">All classrooms &amp; labs</h2>
+        <div class="btn-group no-print" id="c-bulk-actions" style="display:none;">
+          <button class="btn btn-outline-secondary btn-sm" id="c-bulk-activate">Activate selected</button>
+          <button class="btn btn-outline-secondary btn-sm" id="c-bulk-deactivate">Deactivate selected</button>
+          <button class="btn btn-outline-danger btn-sm" id="c-bulk-delete">Delete selected</button>
+        </div>
+      </div>
+      <div id="c-bulk-result"></div>
+      <div id="c-list"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/classrooms.js' %}"></script>
+{% endblock %}

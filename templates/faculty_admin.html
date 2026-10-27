@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Faculty — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="faculty-admin"{% endblock %}
+{% block page_title %}Faculty{% endblock %}
+{% block page_meta %}Configure faculty, limits, type, and assignment rules{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Add faculty</h2>
+      <div id="form-error"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="f-department" class="form-label">Department</label>
+          <select id="f-department" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="f-name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="f-name" placeholder="Dr. Jane Smith">
+        </div>
+        <div class="col-md-4">
+          <label for="f-short-code" class="form-label">Short code</label>
+          <input type="text" class="form-control" id="f-short-code" placeholder="JSM">
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="f-email" class="form-label">Email</label>
+          <input type="text" class="form-control" id="f-email" placeholder="jane.smith@college.edu">
+        </div>
+        <div class="col-md-4">
+          <label for="f-designation" class="form-label">Designation</label>
+          <input type="text" class="form-control" id="f-designation" placeholder="Assistant Professor">
+        </div>
+        <div class="col-md-4">
+          <label for="f-type" class="form-label">Faculty type</label>
+          <select id="f-type" class="form-select">
+            <option value="REGULAR">Regular / Primary</option>
+            <option value="SUPPORTING">Supporting</option>
+            <option value="ADDITIONAL">Additional</option>
+            <option value="RESTRICTED">Restricted / Manual-only</option>
+          </select>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="f-max-day" class="form-label">Max lectures / day</label>
+          <input type="number" class="form-control" id="f-max-day" value="6" min="1" max="10">
+        </div>
+        <div class="col-md-4">
+          <label for="f-max-week" class="form-label">Max lectures / week</label>
+          <input type="number" class="form-control" id="f-max-week" value="24" min="1" max="40">
+        </div>
+      </div>
+      <button class="btn btn-brass" id="f-submit">Add faculty</button>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="h6 font-display mb-0">All faculty</h2>
+        <div class="btn-group no-print" id="f-bulk-actions" style="display:none;">
+          <button class="btn btn-outline-secondary btn-sm" id="f-bulk-activate">Activate selected</button>
+          <button class="btn btn-outline-secondary btn-sm" id="f-bulk-deactivate">Deactivate selected</button>
+          <button class="btn btn-outline-danger btn-sm" id="f-bulk-delete">Delete selected</button>
+        </div>
+      </div>
+      <div id="f-bulk-result"></div>
+      <div id="f-list"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-2">Add a faculty assignment rule</h2>
+      <p class="helptext mb-3">
+        Section 20: a Supporting/Additional/Restricted faculty member is only eligible for a subject
+        the generator can see a rule for — existing in the database is not eligibility.
+      </p>
+      <div id="rule-form-error"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="r-faculty" class="form-label">Faculty</label>
+          <select id="r-faculty" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="r-scope-type" class="form-label">Scope</label>
+          <select id="r-scope-type" class="form-select">
+            <option value="subject">A specific subject</option>
+            <option value="category">A whole category (Core / Extra)</option>
+            <option value="department">A whole department</option>
+          </select>
+        </div>
+        <div class="col-md-4" id="r-subject-wrap">
+          <label for="r-subject" class="form-label">Subject</label>
+          <select id="r-subject" class="form-select"></select>
+        </div>
+        <div class="col-md-4" id="r-category-wrap" style="display:none;">
+          <label for="r-category" class="form-label">Category</label>
+          <select id="r-category" class="form-select">
+            <option value="CORE">Core / Main</option>
+            <option value="EXTRA">Additional / Extra</option>
+          </select>
+        </div>
+        <div class="col-md-4" id="r-department-wrap" style="display:none;">
+          <label for="r-department" class="form-label">Department</label>
+          <select id="r-department" class="form-select"></select>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label for="r-max-lectures" class="form-label">Max lectures (optional cap)</label>
+          <input type="number" class="form-control" id="r-max-lectures" min="0" max="40" placeholder="e.g. 4">
+        </div>
+        <div class="col-md-3">
+          <label for="r-fixed-day" class="form-label">Fixed day (optional)</label>
+          <select id="r-fixed-day" class="form-select">
+            <option value="">— not fixed —</option>
+            <option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option>
+            <option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="r-fixed-slot" class="form-label">Fixed period (optional)</label>
+          <select id="r-fixed-slot" class="form-select">
+            <option value="">— not fixed —</option>
+            <option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option><option value="P4">P4</option>
+            <option value="P5">P5</option><option value="P6">P6</option><option value="P7">P7</option><option value="P8">P8</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label d-block">Generator eligible</label>
+          <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" id="r-generator-eligible" checked>
+            <label class="form-check-label" for="r-generator-eligible">Auto-assignable (off = manual-only)</label>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-outline-secondary" id="r-submit">Add rule</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Existing assignment rules</h2>
+      <div id="r-list"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/faculty_admin.js' %}"></script>
+{% endblock %}

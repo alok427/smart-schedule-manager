@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="dashboard"{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_meta %}College-wide status at a glance{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-brass" href="/manage-timetable/">Generate timetable</a>
+    <a class="btn btn-outline-secondary" href="/faculty-admin/">Manage faculty</a>
+    <a class="btn btn-outline-secondary" href="/subjects/">Subjects</a>
+    <a class="btn btn-outline-secondary" href="/classrooms/">Classrooms</a>
+    <a class="btn btn-outline-secondary" href="/excel-import/">Import from Excel</a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Overview</h2>
+      <div id="stats" class="row row-cols-2 row-cols-md-4 g-3">
+        <div class="col"><span class="text-muted">Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Search faculty, subjects, classrooms, sections</h2>
+      <div class="mb-3" style="max-width:420px;">
+        <input type="text" class="form-control" id="search-input" placeholder="e.g. CS301, Dr. Rao, LAB-01…">
+      </div>
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Recent conflicts &amp; warnings</h2>
+      <div id="conflicts"><span class="text-muted">Loading…</span></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

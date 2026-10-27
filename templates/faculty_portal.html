@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Timetable — Smart Schedule Manager{% endblock %}
+{% block body_attrs %} data-page="faculty"{% endblock %}
+{% block page_title %}My Timetable{% endblock %}
+{% block page_meta %}Your weekly schedule and workload{% endblock %}
+{% block topbar_actions %}<button class="btn btn-outline-secondary btn-sm" id="print-btn">Print</button>{% endblock %}
+
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row row-cols-3 g-3" id="workload-stats">
+        <div class="col"><span class="text-muted">Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3" id="today-title">Today</h2>
+      <div id="today-list"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h6 font-display mb-3">Weekly timetable</h2>
+      <div class="tt-legend mb-2"><span class="l-lec">Lecture</span><span class="l-tut">Tutorial</span><span class="l-prac">Practical / Lab</span></div>
+      <div class="tt-wrap"><div id="timetable-grid"><span class="text-muted">Loading…</span></div></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/faculty_portal.js' %}"></script>
+{% endblock %}
