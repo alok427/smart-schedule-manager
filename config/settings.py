@@ -122,7 +122,9 @@ DATABASES = {
         "PASSWORD": env("DB_PASSWORD"),
         "HOST": env("DB_HOST", default="localhost"),
         "PORT": env("DB_PORT", default="5432"),
-        "CONN_MAX_AGE": 60,
+        "CONN_MAX_AGE": env.int("DB_CONN_MAX_AGE", default=60),
+        "OPTIONS": {"sslmode": env("DB_SSLMODE", default="prefer")},
+        "DISABLE_SERVER_SIDE_CURSORS": True,
     }
 }
 
@@ -228,6 +230,9 @@ if not EMAIL_HOST:
 # ------------------------------------------------------------------------
 # Production security hardening (only meaningfully active when DEBUG=False)
 # ------------------------------------------------------------------------
+# Vercel proxy ke peeche HTTPS chalta hai; iske bina SECURE_SSL_REDIRECT
+# infinite redirect loop bana deta hai.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 if not DEBUG:
     SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
     SESSION_COOKIE_SECURE = True
