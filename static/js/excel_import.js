@@ -84,6 +84,16 @@ document.getElementById("import-btn").addEventListener("click", async () => {
 });
 
 function renderBatchResult(batch, container) {
+  // The server sent an error message instead of an import summary (for
+  // example: expired login, wrong department, no permission). Show that
+  // message rather than a row of "undefined" values.
+  if (!batch || batch.status === undefined) {
+    let msg = "Import failed. Please try again.";
+    if (batch && batch.detail) msg = batch.detail;
+    else if (batch && typeof batch === "object" && Object.keys(batch).length) msg = JSON.stringify(batch);
+    container.appendChild(SSM.el("div", { class: "alert alert-danger", text: msg }));
+    return;
+  }
   const tagClass = batch.status === "SUCCESS" ? "success" : batch.status === "PARTIAL" ? "warning" : "danger";
   const box = SSM.el("div", { class: `alert alert-${batch.status === "FAILED" ? "danger" : "success"}` });
   box.appendChild(SSM.el("span", { class: `badge text-bg-${tagClass} me-2`, text: batch.status }));
