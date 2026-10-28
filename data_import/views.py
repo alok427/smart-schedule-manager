@@ -26,13 +26,22 @@ class ImportTemplateDownloadView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        path = Path(settings.MEDIA_ROOT) / "templates" / "college_timetable_excel_template.xlsx"
-        if not path.exists():
-            from django.core.management import call_command
-            call_command("create_excel_template", out=str(path))
-        if not path.exists():
-            raise Http404("Template could not be generated.")
-        return FileResponse(open(path, "rb"), as_attachment=True, filename=path.name)
+        # Built in memory on every request: no files are read or written, so it
+        # works on Vercel (read-only filesystem, /media is not deployed).
+        from io import BytesIO
+
+        from django.http import HttpResponse
+
+        from .management.commands.create_excel_template import build_workbook
+
+        buffer = BytesIO()
+        build_workbook().save(buffer)
+        response = HttpResponse(
+            buffer.getvalue(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = 'attachment; filename="college_timetable_excel_template.xlsx"'
+        return response
 
 
 class ImportExcelView(APIView):
