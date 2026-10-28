@@ -33,14 +33,25 @@ async function loadNotifications() {
       if (n.body) left.appendChild(SSM.el("div", { class: "cell-meta mt-1", text: n.body }));
       left.appendChild(SSM.el("div", { class: "helptext mt-1", text: new Date(n.created_at).toLocaleString() }));
       row.appendChild(left);
+
+      const actions = document.createElement("div");
+      actions.className = "d-flex gap-2 flex-shrink-0";
       if (!n.is_read) {
-        const btn = SSM.el("button", { class: "btn btn-outline-secondary btn-sm flex-shrink-0", text: "Mark read" });
+        const btn = SSM.el("button", { class: "btn btn-outline-secondary btn-sm", text: "Mark read" });
         btn.addEventListener("click", async () => {
           await SSM.request(`/api/notifications/${n.id}/read/`, { method: "POST" });
           loadNotifications();
         });
-        row.appendChild(btn);
+        actions.appendChild(btn);
       }
+      const delBtn = SSM.el("button", { class: "btn btn-outline-danger btn-sm", text: "Delete" });
+      delBtn.addEventListener("click", async () => {
+        await SSM.request(`/api/notifications/${n.id}/delete/`, { method: "POST" });
+        loadNotifications();
+      });
+      actions.appendChild(delBtn);
+      row.appendChild(actions);
+
       listGroup.appendChild(row);
     });
     list.appendChild(listGroup);
@@ -52,6 +63,18 @@ async function loadNotifications() {
 
 document.getElementById("mark-all-btn").addEventListener("click", async () => {
   await SSM.request("/api/notifications/mark-all-read/", { method: "POST" });
+  loadNotifications();
+});
+
+document.getElementById("delete-read-btn").addEventListener("click", async () => {
+  if (!confirm("Saari read notifications delete karni hai?")) return;
+  await SSM.request("/api/notifications/delete-read/", { method: "POST" });
+  loadNotifications();
+});
+
+document.getElementById("delete-all-btn").addEventListener("click", async () => {
+  if (!confirm("Saari notifications delete karni hai? Ye wapas nahi aayengi.")) return;
+  await SSM.request("/api/notifications/delete-all/", { method: "POST" });
   loadNotifications();
 });
 

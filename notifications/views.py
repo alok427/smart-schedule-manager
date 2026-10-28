@@ -42,3 +42,29 @@ class MarkAllNotificationsReadView(APIView):
             is_read=True, read_at=timezone.now()
         )
         return Response({"marked_read": updated})
+
+
+class DeleteNotificationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        deleted, _ = Notification.objects.filter(pk=pk, recipient=request.user).delete()
+        if not deleted:
+            return Response({"detail": "Not found."}, status=404)
+        return Response({"deleted": deleted})
+
+
+class DeleteReadNotificationsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        deleted, _ = Notification.objects.filter(recipient=request.user, is_read=True).delete()
+        return Response({"deleted": deleted})
+
+
+class DeleteAllNotificationsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        deleted, _ = Notification.objects.filter(recipient=request.user).delete()
+        return Response({"deleted": deleted})

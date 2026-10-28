@@ -4,7 +4,11 @@
 {% block body_attrs %} data-page="notifications"{% endblock %}
 {% block page_title %}Notifications{% endblock %}
 {% block page_meta %}Generation, publish, and conflict alerts{% endblock %}
-{% block topbar_actions %}<button class="btn btn-outline-secondary btn-sm" id="mark-all-btn">Mark all read</button>{% endblock %}
+{% block topbar_actions %}
+  <button class="btn btn-outline-secondary btn-sm" id="mark-all-btn">Mark all read</button>
+  <button class="btn btn-outline-secondary btn-sm" id="delete-read-btn">Delete read</button>
+  <button class="btn btn-outline-danger btn-sm" id="delete-all-btn">Delete all</button>
+{% endblock %}
 
 {% block content %}
   <div class="card">
