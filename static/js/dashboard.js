@@ -30,7 +30,15 @@ async function loadStats() {
       conflictsBox.appendChild(SSM.el("div", { class: "text-muted text-center py-4", text: "No conflicts recorded. Every recent generation was clean." }));
     } else {
       s.recent_conflicts.forEach((c) => {
-        conflictsBox.appendChild(SSM.el("div", { class: "alert alert-danger", text: `${c.section} — ${c.message}` }));
+        const box = SSM.el("div", { class: "alert alert-danger d-flex justify-content-between align-items-start gap-3" });
+        box.appendChild(SSM.el("div", { text: `${c.section} — ${c.message}` }));
+        const btn = SSM.el("button", { class: "btn btn-outline-danger btn-sm flex-shrink-0", text: "Dismiss" });
+        btn.addEventListener("click", async () => {
+          await SSM.request(`/api/dashboard/conflicts/${c.id}/delete/`, { method: "POST" });
+          loadStats();
+        });
+        box.appendChild(btn);
+        conflictsBox.appendChild(box);
       });
     }
   } catch (err) {
@@ -68,6 +76,12 @@ document.getElementById("search-input").addEventListener("input", (e) => {
       box.appendChild(SSM.el("div", { class: "alert alert-danger", text: err.message }));
     }
   }, 300);
+});
+
+document.getElementById("clear-conflicts-btn").addEventListener("click", async () => {
+  if (!confirm("Saare conflicts/warnings dashboard se hata dene hain?")) return;
+  await SSM.request("/api/dashboard/conflicts/clear/", { method: "POST" });
+  loadStats();
 });
 
 loadStats();

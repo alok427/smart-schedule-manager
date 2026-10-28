@@ -9,6 +9,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.permissions import IsSuperAdminOrDeptAdmin
 from academics.models import Department, Section, Subject
 from classrooms.models import Classroom
 from common.constants import GenerationStatus, Role
@@ -50,10 +51,43 @@ class DashboardStatsView(APIView):
             "lab_count": classroom_qs.filter(room_type="LAB").count(),
             "failed_generation_count": stale_generations.count(),
             "recent_conflicts": [
-                {"section": str(i.section), "subject": str(i.subject) if i.subject else None, "message": i.message}
+                {
+                    "id": i.id,
+                    "section": str(i.section),
+                    "subject": str(i.subject) if i.subject else None,
+                    "message": i.message,
+                }
                 for i in recent_issues
             ],
         })
+
+
+class DeleteConflictView(APIView):
+    """Dismiss one conflict/warning from the dashboard (Dept Admin: own department only)."""
+
+    permission_classes = [IsSuperAdminOrDeptAdmin]
+
+    def post(self, request, pk):
+        qs = GenerationIssue.objects.filter(pk=pk, severity="ERROR")
+        if request.user.role != Role.SUPER_ADMIN:
+            qs = qs.filter(section__department=request.user.department)
+        deleted, _ = qs.delete()
+        if not deleted:
+            return Response({"detail": "Not found."}, status=404)
+        return Response({"deleted": deleted})
+
+
+class ClearConflictsView(APIView):
+    """Clear all conflicts/warnings visible to this admin."""
+
+    permission_classes = [IsSuperAdminOrDeptAdmin]
+
+    def post(self, request):
+        qs = GenerationIssue.objects.filter(severity="ERROR")
+        if request.user.role != Role.SUPER_ADMIN:
+            qs = qs.filter(section__department=request.user.department)
+        deleted, _ = qs.delete()
+        return Response({"deleted": deleted})
 
 
 class GlobalSearchView(APIView):
