@@ -25,10 +25,17 @@ async function loadDepartmentsAndYears() {
 document.getElementById("template-link").addEventListener("click", async (e) => {
   e.preventDefault();
   try {
-    const resp = await fetch("/api/data-import/template/", {
-      headers: { Authorization: `Bearer ${SSM.getAccess()}` },
-    });
-    if (!resp.ok) throw new Error("Could not download the template.");
+    const url0 = "/api/data-import/template/";
+    const doFetch = () => fetch(url0, { headers: { Authorization: `Bearer ${SSM.getAccess()}` } });
+    let resp = await doFetch();
+    // Access tokens expire (60 min). Refresh once and retry before giving up.
+    if (resp.status === 401 && (await SSM.refreshAccessToken())) resp = await doFetch();
+    if (resp.status === 401) {
+      SSM.clearSession();
+      window.location.href = "/login/";
+      return;
+    }
+    if (!resp.ok) throw new Error(`Could not download the template (HTTP ${resp.status}).`);
     const blob = await resp.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

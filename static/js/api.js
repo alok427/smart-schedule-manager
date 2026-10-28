@@ -110,5 +110,5 @@ const SSM = (() => {
     return node;
   }
 
-  return { getAccess, getRefresh, getUser, setSession, clearSession, request, requireAuth, logout, DAY_NAMES, el };
+  return { getAccess, getRefresh, getUser, setSession, clearSession, refreshAccessToken, request, requireAuth, logout, DAY_NAMES, el };
 })();
